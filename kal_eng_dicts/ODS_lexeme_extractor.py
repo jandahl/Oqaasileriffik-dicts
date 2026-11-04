@@ -2,7 +2,9 @@
 import argparse
 import json
 import logging
+import re
 import sys
+from urllib.parse import urlparse
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -181,6 +183,65 @@ def load_authored_presets(path: Path) -> list[dict[str, Any]]:
     return data
 
 
+def load_authored_contextual_glosses(path: Path) -> dict[str, list[dict[str, Any]]]:
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, list):
+        raise TypeError("authored_contextual_glosses is not a list")
+    result: dict[str, list[dict[str, Any]]] = {}
+    for row in data:
+        if not isinstance(row, dict):
+            raise TypeError("Each authored contextual gloss row must be an object")
+        source_id = str(row.get("source_id", "")).strip()
+        senses = row.get("contextual_glosses")
+        if not source_id or not isinstance(senses, list) or not row.get("evidence_note"):
+            raise ValueError("Each contextual gloss row needs source_id, contextual_glosses and evidence_note")
+        if source_id in result:
+            raise ValueError(f"Duplicate contextual gloss overlay for {source_id}")
+        for sense in senses:
+            if (not isinstance(sense, dict) or not isinstance(sense.get("when"), dict)
+                    or not all(isinstance(sense.get(key), str) and sense[key].strip() for key in ("en", "da", "source"))
+                    or not all(isinstance(sense["when"].get(key), str) and sense["when"][key].strip() for key in ("case", "clause_relation"))
+                    or urlparse(str(sense.get("source", ""))).scheme != "https"
+                    or not urlparse(str(sense.get("source", ""))).netloc):
+                raise ValueError(f"Malformed contextual gloss for {source_id}")
+        result[source_id] = senses
+    return result
+
+
+def load_authored_danish_glosses(path: Path) -> dict[str, dict[str, str]]:
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, list):
+        raise TypeError("authored_danish_glosses is not a list")
+    result: dict[str, dict[str, str]] = {}
+    for row in data:
+        if not isinstance(row, dict):
+            raise TypeError("Each authored verb gloss row must be an object")
+        source_id = str(row.get("source_id", "")).strip()
+        gloss_da = str(row.get("gloss_da", "")).strip()
+        verb_phrase = str(row.get("da_verb_phrase", "")).strip()
+        source = str(row.get("gloss_da_source", "")).strip()
+        if not source_id or not gloss_da or not row.get("evidence_note"):
+            raise ValueError("Each authored Danish gloss needs source_id, gloss_da and evidence_note")
+        parsed_source = urlparse(source)
+        is_https = parsed_source.scheme == "https" and bool(parsed_source.netloc)
+        is_dictionary_citation = bool(re.fullmatch(r"Oqaatsit1997:[^#]+#e\d+", source))
+        if not (is_https or is_dictionary_citation):
+            raise ValueError(f"Authored Danish gloss for {source_id} needs an HTTPS URL or Oqaatsit citation")
+        if source_id in result:
+            raise ValueError(f"Duplicate authored verb gloss overlay for {source_id}")
+        result[source_id] = {
+            "gloss_da": gloss_da,
+            "gloss_da_source": source,
+        }
+        if verb_phrase:
+            result[source_id]["da_verb_phrase"] = verb_phrase
+    return result
+
+
 
 def main() -> None:
     logging.basicConfig(
@@ -211,6 +272,8 @@ def _main_impl() -> None:
 
     script_dir = Path(__file__).resolve().parent
     authored_path = script_dir / "authored_presets.json"
+    contextual_glosses_path = script_dir / "authored_contextual_glosses.json"
+    danish_glosses_path = script_dir / "authored_danish_glosses.json"
     ods_cwd = Path.cwd() / "2018 Chicago"
     ods_script = script_dir.parent / "2018 Chicago"
 
@@ -259,12 +322,14 @@ def _main_impl() -> None:
         "source_repo": "https://github.com/Oqaasileriffik/dicts",
         "fork_repo": "https://github.com/jandahl/Oqaasileriffik-dicts",
         "attribution": "Oqaasileriffik (Greenlandic Language Secretariat), 2018 Chicago Kalaallisut–English Dictionary, CC-BY-SA 4.0",
-        "changes": "Subset of entries extracted and reformatted; class_path fields added for KalaalliCut color mapping.",
-        "available_fields": ["lexeme", "word_class", "gloss_en"],
+        "changes": "Subset of entries extracted and reformatted; class_path fields added for KalaalliCut color mapping; cited contextual and authored verb-gloss overlays are preserved.",
+        "available_fields": ["lexeme", "word_class", "gloss_en", "gloss_da", "da_verb_phrase", "gloss_da_source", "contextual_glosses"],
     }
 
     sandhi_presets = []
     all_entries = []
+    authored_contextual_glosses = load_authored_contextual_glosses(contextual_glosses_path)
+    authored_danish_glosses = load_authored_danish_glosses(danish_glosses_path)
 
     def extractor_func(_data_dir: Path) -> list[dict[str, Any]]:
         nonlocal sandhi_presets, all_entries
@@ -290,6 +355,20 @@ def _main_impl() -> None:
             
             write_atomic(cache_path, entries, indent=None)
             
+        entry_ids = {str(entry.get("id")) for entry in all_entries}
+        missing = set(authored_contextual_glosses) - entry_ids
+        if missing:
+            raise ValueError(f"Contextual gloss overlays reference missing dictionary rows: {sorted(missing)}")
+        missing = set(authored_danish_glosses) - entry_ids
+        if missing:
+            raise ValueError(f"Authored Danish gloss overlays reference missing dictionary rows: {sorted(missing)}")
+        for entry in all_entries:
+            senses = authored_contextual_glosses.get(str(entry.get("id")))
+            if senses:
+                entry["contextual_glosses"] = senses
+            danish_gloss = authored_danish_glosses.get(str(entry.get("id")))
+            if danish_gloss:
+                entry.update(danish_gloss)
         log.info("Total dictionary_entries: %d", len(all_entries))
         
         sandhi_presets.extend(load_authored_presets(authored_path))
@@ -327,7 +406,10 @@ def _main_impl() -> None:
                 "raw_data": {
                     "lexeme": entry.get("lexeme") or "",
                     "word_class": entry.get("word_class") or "",
-                    "gloss_en": entry.get("gloss_en") or ""
+                    "gloss_en": entry.get("gloss_en") or "",
+                    **({"contextual_glosses": entry["contextual_glosses"]}
+                        if entry.get("contextual_glosses") else {}),
+                    **({key: entry[key] for key in ("gloss_da", "da_verb_phrase", "gloss_da_source") if entry.get(key)}),
                 }
             }
             for entry in all_entries

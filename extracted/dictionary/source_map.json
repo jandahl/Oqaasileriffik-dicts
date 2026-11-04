@@ -1,17 +1,21 @@
 {
   "meta": {
     "schema_version": "1.0",
-    "generated_at": "2026-06-14T13:26:17.771893+00:00",
+    "generated_at": "2026-11-04T14:04:12.257498+00:00",
     "license": "CC-BY-SA 4.0",
     "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
     "source_repo": "https://github.com/Oqaasileriffik/dicts",
-    "fork_repo": "https://github.com/jandahl/Oqaasileriffik-KAL-ENG-dicts",
+    "fork_repo": "https://github.com/jandahl/Oqaasileriffik-dicts",
     "attribution": "Oqaasileriffik (Greenlandic Language Secretariat), 2018 Chicago Kalaallisut–English Dictionary, CC-BY-SA 4.0",
-    "changes": "Subset of entries extracted and reformatted; class_path fields added for KalaalliCut color mapping.",
+    "changes": "Subset of entries extracted and reformatted; class_path fields added for KalaalliCut color mapping; cited contextual and authored verb-gloss overlays are preserved.",
     "available_fields": [
       "lexeme",
       "word_class",
-      "gloss_en"
+      "gloss_en",
+      "gloss_da",
+      "da_verb_phrase",
+      "gloss_da_source",
+      "contextual_glosses"
     ]
   },
   "entries": [
@@ -86244,7 +86248,9 @@
       "raw_data": {
         "lexeme": "politiit",
         "word_class": "taggit qasseersiut",
-        "gloss_en": "police department"
+        "gloss_en": "police department",
+        "gloss_da": "politiet",
+        "gloss_da_source": "Oqaatsit1997:politiit#e11671"
       }
     },
     {
@@ -90044,7 +90050,10 @@
       "raw_data": {
         "lexeme": "paasissutissarsiorpoq",
         "word_class": "oqaluut susaatsoq",
-        "gloss_en": "seeks information"
+        "gloss_en": "seeks information",
+        "gloss_da": "søge oplysninger",
+        "da_verb_phrase": "søger oplysninger",
+        "gloss_da_source": "Oqaatsit1997:paasissutissarsiorpoq#e10442"
       }
     },
     {
@@ -117164,7 +117173,18 @@
       "raw_data": {
         "lexeme": "suliaq",
         "word_class": "taggit",
-        "gloss_en": "work, occupation"
+        "gloss_en": "work, occupation",
+        "contextual_glosses": [
+          {
+            "when": {
+              "case": "locative",
+              "clause_relation": "concerning_object"
+            },
+            "en": "in a case",
+            "da": "i en sag",
+            "source": "https://ina.gl/media/op0peq5o/pkt9_em2012_omb_ber_2011_dk.pdf#page=36"
+          }
+        ]
       }
     },
     {

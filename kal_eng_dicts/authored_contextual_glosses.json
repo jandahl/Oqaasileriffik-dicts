@@ -1,0 +1,17 @@
+[
+  {
+    "source_id": "S_Sheet1_1604",
+    "contextual_glosses": [
+      {
+        "when": {
+          "case": "locative",
+          "clause_relation": "concerning_object"
+        },
+        "en": "in a case",
+        "da": "i en sag",
+        "source": "https://ina.gl/media/op0peq5o/pkt9_em2012_omb_ber_2011_dk.pdf#page=36"
+      }
+    ],
+    "evidence_note": "The 2011 Danish Ombudsman report's official Greenlandic terminology identifies suliami as 'part i en sag' in the terminology discussion of suliami peqataasoq/suliami illua’tungiusoq. This is a context-limited locative gloss; the 2018 dictionary's general 'work, occupation' sense is retained."
+  }
+]
