@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["meta", "sandhi_presets"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["schema_version", "license", "attribution", "generated_at"],
+      "properties": {
+        "available_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "sandhi_presets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "desc", "class_path", "seq", "expected", "source"],
+        "properties": {
+          "seq": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["text", "type", "join"],
+              "properties": {
+                "type": { "enum": ["ROOT", "AFFIX", "INFLECTION"] },
+                "join": { "enum": ["NONE", "TRUNCATIVE", "ASSIMILATIVE", "ADDITIVE"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "raw_data"],
+        "properties": {
+          "source_id": { "type": "string" },
+          "raw_data": {
+            "type": "object",
+            "properties": {
+              "lexeme": { "type": "string" },
+              "word_class": { "type": "string" },
+              "gloss_en": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "dictionary_entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "lexeme", "word_class", "class_path", "source_file", "source_row"],
+        "properties": {
+          "id": { "type": "string" },
+          "lexeme": { "type": "string" },
+          "word_class": { "type": "string" },
+          "class_path": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "stem": { "type": "string" },
+          "gloss_en": { "type": "string" },
+          "gloss_da": { "type": "string" },
+          "da_verb_phrase": { "type": "string", "minLength": 1 },
+          "gloss_da_source": { "type": "string", "format": "uri" },
+          "source_file": { "type": "string" },
+          "source_row": { "type": "integer" },
+          "contextual_glosses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["when", "en", "da", "source"],
+              "properties": {
+                "when": {
+                  "type": "object",
+                  "required": ["case", "clause_relation"],
+                  "properties": {
+                    "case": { "type": "string", "minLength": 1 },
+                    "clause_relation": { "type": "string", "minLength": 1 }
+                  }
+                },
+                "en": { "type": "string" },
+                "da": { "type": "string" },
+                "source": { "type": "string", "format": "uri" }
+              }
+            }
+          },
+          "valence": { "type": "integer", "enum": [1, 2] }
+        }
+      }
+    }
+  }
+}

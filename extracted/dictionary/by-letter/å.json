@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-11-04T11:19:30.672997+00:00",
+    "license": "CC-BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source_repo": "https://github.com/Oqaasileriffik/dicts",
+    "fork_repo": "https://github.com/jandahl/Oqaasileriffik-dicts",
+    "attribution": "Oqaasileriffik (Greenlandic Language Secretariat), 2018 Chicago Kalaallisut–English Dictionary, CC-BY-SA 4.0",
+    "changes": "Subset of entries extracted and reformatted; class_path fields added for KalaalliCut color mapping; cited contextual and authored verb-gloss overlays are preserved.",
+    "available_fields": [
+      "lexeme",
+      "word_class",
+      "gloss_en",
+      "gloss_da",
+      "da_verb_phrase",
+      "gloss_da_source",
+      "contextual_glosses"
+    ]
+  },
+  "dictionary_entries": [
+    {
+      "id": "Z AE OE AA_ZÆØÅ_17",
+      "lexeme": "Ålandimiu",
+      "word_class": "taggit",
+      "class_path": [
+        "nominal_root",
+        "common_noun"
+      ],
+      "stem": "Ålandimiu",
+      "gloss_en": "someone from Åland",
+      "source_file": "Z AE OE AA.ods",
+      "source_row": 17
+    }
+  ]
+}
