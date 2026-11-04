@@ -1,21 +1,17 @@
 {
   "meta": {
     "schema_version": "1.0",
-    "generated_at": "2026-11-04T11:19:30.672997+00:00",
+    "generated_at": "2026-05-26T19:10:50.639945+00:00",
     "license": "CC-BY-SA 4.0",
     "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
     "source_repo": "https://github.com/Oqaasileriffik/dicts",
-    "fork_repo": "https://github.com/jandahl/Oqaasileriffik-dicts",
+    "fork_repo": "https://github.com/jandahl/Oqaasileriffik-KAL-ENG-dicts",
     "attribution": "Oqaasileriffik (Greenlandic Language Secretariat), 2018 Chicago Kalaallisut–English Dictionary, CC-BY-SA 4.0",
-    "changes": "Subset of entries extracted and reformatted; class_path fields added for KalaalliCut color mapping; cited contextual and authored verb-gloss overlays are preserved.",
+    "changes": "Subset of entries extracted and reformatted; class_path fields added for KalaalliCut color mapping.",
     "available_fields": [
       "lexeme",
       "word_class",
-      "gloss_en",
-      "gloss_da",
-      "da_verb_phrase",
-      "gloss_da_source",
-      "contextual_glosses"
+      "gloss_en"
     ]
   },
   "dictionary_entries": [
@@ -15197,9 +15193,7 @@
       "stem": "politiit",
       "gloss_en": "police department",
       "source_file": "P.ods",
-      "source_row": 1133,
-      "gloss_da": "politiet",
-      "gloss_da_source": "Oqaatsit1997:politiit#e11671"
+      "source_row": 1133
     },
     {
       "id": "P_Sheet2_1134",
@@ -21600,10 +21594,7 @@
       "gloss_en": "seeks information",
       "source_file": "P.ods",
       "source_row": 1608,
-      "valence": 1,
-      "gloss_da": "søge oplysninger",
-      "gloss_da_source": "Oqaatsit1997:paasissutissarsiorpoq#e10442",
-      "da_verb_phrase": "søger oplysninger"
+      "valence": 1
     },
     {
       "id": "P_Sheet2_1609",
